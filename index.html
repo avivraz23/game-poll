@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>איזה משחק אבנה?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Secular+One&family=Assistant:wght@400;600;700&display=swap">
+<style>
+:root {
+  --bg: #eef1f6; --surface: #ffffff; --ink: #18202e; --muted: #566074; --line: #18202e;
+  --sky: #cfe3f7; --ground: #3c4a63; --red: #e2463b; --blue: #2f7fd8; --green: #2f9e5b; --gold: #f2b62c; --purple: #8a5cd6;
+  --display: "Secular One", "Arial Hebrew", system-ui, sans-serif;
+  --body: "Assistant", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #121722; --surface: #1b2230; --ink: #eef1f6; --muted: #a3adc0; --line: #0a0e15; --sky: #23324a; --ground: #4d5d7a; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.6; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-inline: 16px; padding-block: 32px 56px; display: grid; gap: 28px; }
+header { display: grid; gap: 8px; max-width: 62ch; }
+.eyebrow { font-weight: 700; letter-spacing: .06em; color: var(--muted); font-size: 14px; }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(34px, 7vw, 56px); line-height: 1.1; margin: 0; }
+header p { margin: 0; color: var(--muted); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; }
+.card { position: relative; background: var(--surface); border: 3px solid var(--line); border-radius: 14px; box-shadow: 6px 6px 0 var(--line); overflow: hidden; display: grid; grid-template-rows: auto 1fr; cursor: pointer; transition: transform .12s, box-shadow .12s; }
+.card:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--line); }
+.card input { position: absolute; opacity: 0; pointer-events: none; }
+.card:has(input:checked) { outline: 5px solid var(--gold); outline-offset: 3px; }
+.card:has(input:focus-visible) { outline: 3px dashed var(--blue); outline-offset: 3px; }
+.scene { background: var(--sky); border-bottom: 3px solid var(--line); aspect-ratio: 16 / 9; }
+.scene svg { width: 100%; height: 100%; display: block; }
+.info { padding: 18px 20px 22px; display: grid; gap: 10px; align-content: start; }
+.tag { justify-self: start; font-family: var(--display); font-size: 15px; color: #fff; padding: 2px 12px; border-radius: 999px; border: 2px solid var(--line); }
+h2 { font-family: var(--display); font-weight: 400; font-size: 26px; line-height: 1.2; margin: 0; }
+.like { margin: 0; color: var(--muted); font-size: 15px; }
+ul { margin: 0; padding-inline-start: 20px; display: grid; gap: 4px; }
+.pick { justify-self: start; font-weight: 700; border: 2px solid var(--line); border-radius: 999px; padding: 4px 14px; background: var(--bg); }
+.card:has(input:checked) .pick { background: var(--gold); color: #18202e; }
+.card:has(input:checked) .pick::before { content: "✓ "; }
+.own .scene { display: grid; place-items: center; font-family: var(--display); font-size: 64px; color: var(--purple); }
+form { display: grid; gap: 28px; }
+.extra { background: var(--surface); border: 3px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 14px; max-width: 680px; }
+label.field { display: grid; gap: 6px; font-weight: 700; }
+label.field span { font-weight: 400; color: var(--muted); font-size: 15px; }
+input[type=text], textarea { font: inherit; color: var(--ink); background: var(--bg); border: 2px solid var(--line); border-radius: 10px; padding: 10px 12px; width: 100%; }
+textarea { min-height: 110px; resize: vertical; }
+button { font-family: var(--display); font-size: 22px; color: #18202e; background: var(--gold); border: 3px solid var(--line); border-radius: 12px; box-shadow: 4px 4px 0 var(--line); padding: 10px 28px; cursor: pointer; justify-self: start; }
+button:disabled { opacity: .6; cursor: wait; }
+.msg { margin: 0; font-weight: 700; }
+.msg.err { color: var(--red); }
+.thanks { background: var(--surface); border: 3px solid var(--line); border-radius: 14px; box-shadow: 6px 6px 0 var(--line); padding: 28px; display: grid; gap: 8px; max-width: 680px; }
+.thanks h2 { font-size: 34px; }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <span class="eyebrow">פרויקט סמסטר · משחק פלטפורמה דו־ממדי</span>
+    <h1>איזה משחק אבנה?</h1>
+    <p>בסמסטר הזה אני בונה ב-Unity משחק פלטפורמה דו־ממדי, כמו סופר מריו: רואים מהצד, רצים וקופצים. יש לי שלושה רעיונות ואני מתלבט. בחרו את מה שהייתם הכי רוצים לשחק, או כתבו רעיון משלכם.</p>
+  </header>
+
+  <form id="poll" novalidate>
+    <section class="cards" role="radiogroup" aria-label="בחירת רעיון">
+      <label class="card">
+        <input type="radio" name="choice" value="1" id="c1">
+        <div class="scene" aria-hidden="true">
+          <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
+            <rect x="0" y="140" width="320" height="40" fill="var(--ground)"/>
+            <rect x="190" y="96" width="90" height="12" rx="3" fill="var(--ground)"/>
+            <rect x="52" y="104" width="22" height="36" rx="4" fill="var(--red)" stroke="var(--line)" stroke-width="3"/>
+            <rect x="74" y="116" width="18" height="6" fill="var(--line)"/>
+            <circle cx="112" cy="119" r="3" fill="var(--gold)"/><circle cx="134" cy="119" r="3" fill="var(--gold)"/><circle cx="156" cy="119" r="3" fill="var(--gold)"/>
+            <rect x="226" y="62" width="22" height="34" rx="4" fill="var(--muted)" stroke="var(--line)" stroke-width="3"/>
+            <rect x="250" y="106" width="44" height="34" rx="5" fill="var(--muted)" stroke="var(--line)" stroke-width="3"/>
+            <rect x="226" y="114" width="26" height="6" fill="var(--line)"/>
+          </svg>
+        </div>
+        <div class="info">
+          <span class="tag" style="background: var(--red)">רעיון 1</span>
+          <h2>ריצה ויריות</h2>
+          <p class="like">בהשראת Call of Duty, Payday ו-Metal Slug</p>
+          <ul>
+            <li>רצים, קופצים ויורים באויבים</li>
+            <li>אפשר גם בגרסת שוד: לברוח מהשוטרים עם השלל</li>
+            <li>הרבה אקשן ופיצוצים</li>
+          </ul>
+          <span class="pick">בוחר בזה</span>
+        </div>
+      </label>
+
+      <label class="card">
+        <input type="radio" name="choice" value="2" id="c2">
+        <div class="scene" aria-hidden="true">
+          <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
+            <rect x="30" y="0" width="12" height="180" fill="var(--ground)"/>
+            <rect x="278" y="0" width="12" height="180" fill="var(--ground)"/>
+            <rect x="60" y="34" width="80" height="10" rx="3" fill="var(--ground)"/>
+            <rect x="170" y="74" width="90" height="10" rx="3" fill="var(--ground)"/>
+            <rect x="80" y="114" width="90" height="10" rx="3" fill="var(--ground)"/>
+            <rect x="196" y="40" width="20" height="30" rx="4" fill="var(--blue)" stroke="var(--line)" stroke-width="3"/>
+            <path d="M42 160 Q80 148 120 160 T200 160 T278 160 V180 H42 Z" fill="var(--red)" opacity=".85"/>
+          </svg>
+        </div>
+        <div class="info">
+          <span class="tag" style="background: var(--blue)">רעיון 2</span>
+          <h2>טיפוס לשיא</h2>
+          <p class="like">בהשראת Icy Tower</p>
+          <ul>
+            <li>קופצים למעלה הכי מהר שאפשר</li>
+            <li>משהו רודף אחריך מלמטה, כמו לבה או שוטרים</li>
+            <li>שעון, ניקוד וקומבו. מתחרים בחברים על השיא</li>
+          </ul>
+          <span class="pick">בוחר בזה</span>
+        </div>
+      </label>
+
+      <label class="card">
+        <input type="radio" name="choice" value="3" id="c3">
+        <div class="scene" aria-hidden="true">
+          <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
+            <rect x="0" y="140" width="320" height="40" fill="var(--ground)"/>
+            <rect x="60" y="102" width="22" height="38" rx="4" fill="var(--green)" stroke="var(--line)" stroke-width="3"/>
+            <path d="M84 104 L118 84" stroke="var(--line)" stroke-width="5" stroke-linecap="round"/>
+            <path d="M100 110 Q130 96 150 112" stroke="var(--gold)" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <ellipse cx="180" cy="128" rx="20" ry="13" fill="var(--blue)" stroke="var(--line)" stroke-width="3"/>
+            <ellipse cx="222" cy="130" rx="16" ry="10" fill="var(--blue)" stroke="var(--line)" stroke-width="3"/>
+            <rect x="248" y="62" width="50" height="78" rx="10" fill="var(--red)" stroke="var(--line)" stroke-width="3"/>
+            <circle cx="262" cy="84" r="5" fill="var(--gold)"/><circle cx="284" cy="84" r="5" fill="var(--gold)"/>
+          </svg>
+        </div>
+        <div class="info">
+          <span class="tag" style="background: var(--green)">רעיון 3</span>
+          <h2>לוחם מול מפלצות</h2>
+          <p class="like">בהשראת MapleStory</p>
+          <ul>
+            <li>דמות עם התקפות מיוחדות נלחמת בגלים של מפלצות</li>
+            <li>כל מפלצת משאירה מטבעות</li>
+            <li>בחנות שבדרך קונים שדרוגים: נשק חזק יותר, עוד חיים, קפיצה כפולה והתקפות חדשות</li>
+            <li>יש שדרוגים נדירים שמוצאים במקומות סודיים או מקבלים אחרי בוס</li>
+            <li>בסוף: קרב מול בוס גדול</li>
+          </ul>
+          <span class="pick">בוחר בזה</span>
+        </div>
+      </label>
+
+      <label class="card own">
+        <input type="radio" name="choice" value="4" id="c4">
+        <div class="scene" aria-hidden="true">?</div>
+        <div class="info">
+          <span class="tag" style="background: var(--purple)">רעיון 4</span>
+          <h2>רעיון משלי</h2>
+          <p class="like">יש לכם רעיון אחר? אשמח לשמוע</p>
+          <ul>
+            <li>בחרו בכרטיס הזה וכתבו את הרעיון בתיבה למטה</li>
+            <li>גם חצי משפט עוזר</li>
+          </ul>
+          <span class="pick">בוחר בזה</span>
+        </div>
+      </label>
+    </section>
+
+    <section class="extra">
+      <label class="field" for="idea">רעיון משלכם, או משהו להוסיף
+        <span>לא חובה, אלא אם בחרתם ב"רעיון משלי"</span>
+        <textarea id="idea" maxlength="1000"></textarea>
+      </label>
+      <label class="field" for="name">השם שלכם
+        <span>לא חובה</span>
+        <input type="text" id="name" maxlength="60" autocomplete="given-name">
+      </label>
+      <button type="submit" id="send">שליחת הצבעה</button>
+      <p class="msg" id="msg" role="status"></p>
+    </section>
+  </form>
+
+  <section class="thanks" id="thanks" hidden>
+    <h2>תודה! ההצבעה נשמרה 🎮</h2>
+    <p>עזרתם לי לבחור את המשחק. כשהוא יהיה מוכן, תהיו הראשונים לשחק בו.</p>
+  </section>
+</main>
+
+<script>
+const API = "https://blsafmoxrbhdyxtlrvds.supabase.co/rest/v1/votes";
+const KEY = "sb_publishable_UYfwJVTQdVI1CsTsG-1_vQ_36GCjIYS";
+const form = document.getElementById("poll");
+const msg = document.getElementById("msg");
+const btn = document.getElementById("send");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  msg.className = "msg";
+  const picked = form.querySelector("input[name=choice]:checked");
+  const idea = document.getElementById("idea").value.trim();
+  const name = document.getElementById("name").value.trim();
+  if (!picked) { msg.className = "msg err"; msg.textContent = "בחרו קודם רעיון אחד מהכרטיסים למעלה."; return; }
+  if (picked.value === "4" && !idea) { msg.className = "msg err"; msg.textContent = "בחרתם \"רעיון משלי\". כתבו אותו בתיבה."; document.getElementById("idea").focus(); return; }
+  btn.disabled = true; msg.textContent = "שולח...";
+  try {
+    const res = await fetch(API, {
+      method: "POST",
+      headers: { apikey: KEY, "Content-Type": "application/json", Prefer: "return=minimal" },
+      body: JSON.stringify({ choice: Number(picked.value), idea: idea || null, voter_name: name || null })
+    });
+    if (!res.ok) throw new Error(res.status);
+    form.hidden = true;
+    document.getElementById("thanks").hidden = false;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } catch (err) {
+    msg.className = "msg err";
+    msg.textContent = "השליחה לא הצליחה. בדקו שיש אינטרנט ונסו שוב.";
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

@@ -42,13 +42,14 @@ ul { margin: 0; padding-inline-start: 20px; display: grid; gap: 4px; }
 .card:has(input:checked) .pick::before { content: "✓ "; }
 .own .scene { display: grid; place-items: center; font-family: var(--display); font-size: 64px; color: var(--purple); }
 form { display: grid; gap: 28px; }
-.extra { background: var(--surface); border: 3px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 14px; max-width: 680px; }
+.extra { scroll-margin-top: 16px; background: var(--surface); border: 3px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 14px; max-width: 680px; }
 label.field { display: grid; gap: 6px; font-weight: 700; }
 label.field span { font-weight: 400; color: var(--muted); font-size: 15px; }
 input[type=text], textarea { font: inherit; color: var(--ink); background: var(--bg); border: 2px solid var(--line); border-radius: 10px; padding: 10px 12px; width: 100%; }
 textarea { min-height: 110px; resize: vertical; }
-button { font-family: var(--display); font-size: 22px; color: #18202e; background: var(--gold); border: 3px solid var(--line); border-radius: 12px; box-shadow: 4px 4px 0 var(--line); padding: 10px 28px; cursor: pointer; justify-self: start; }
+button { width: 100%; font-family: var(--display); font-size: 24px; color: #18202e; background: var(--gold); border: 3px solid var(--line); border-radius: 12px; box-shadow: 4px 4px 0 var(--line); padding: 10px 28px; cursor: pointer; justify-self: start; }
 button:disabled { opacity: .6; cursor: wait; }
+.step { margin: 0; font-family: var(--display); font-size: 20px; }
 .msg { margin: 0; font-weight: 700; }
 .msg.err { color: var(--red); }
 .thanks { background: var(--surface); border: 3px solid var(--line); border-radius: 14px; box-shadow: 6px 6px 0 var(--line); padding: 28px; display: grid; gap: 8px; max-width: 680px; }
@@ -164,7 +165,8 @@ button:disabled { opacity: .6; cursor: wait; }
       </label>
     </section>
 
-    <section class="extra">
+    <section class="extra" id="extra">
+      <p class="step" id="step">בחרו רעיון למעלה, ואז לחצו כאן על "שליחת הצבעה" 👇</p>
       <label class="field" for="idea">רעיון משלכם, או משהו להוסיף
         <span>לא חובה, אלא אם בחרתם ב"רעיון משלי"</span>
         <textarea id="idea" maxlength="1000"></textarea>
@@ -190,6 +192,11 @@ const KEY = "sb_publishable_UYfwJVTQdVI1CsTsG-1_vQ_36GCjIYS";
 const form = document.getElementById("poll");
 const msg = document.getElementById("msg");
 const btn = document.getElementById("send");
+form.querySelectorAll("input[name=choice]").forEach((r) => r.addEventListener("change", () => {
+  const title = r.closest(".card").querySelector("h2").textContent;
+  document.getElementById("step").textContent = "בחרתם: " + title + ". עכשיו לחצו על \"שליחת הצבעה\" כדי שההצבעה תישמר 👇";
+  document.getElementById("extra").scrollIntoView({ behavior: "smooth", block: "start" });
+}));
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
